@@ -6,15 +6,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -31,6 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import edu.sfsu.shrine.R;
+import edu.sfsu.shrine.code.activity.ProfileActivity;
+import edu.sfsu.shrine.code.adapter.RecyclerViewAdapter;
 import edu.sfsu.shrine.code.model.RandomUserModel;
 import edu.sfsu.shrine.databinding.FragmentHomeBinding;
 import okhttp3.OkHttpClient;
@@ -38,7 +43,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
-    Context context;
 
     private FragmentHomeBinding binding;
 
@@ -46,34 +50,39 @@ public class HomeFragment extends Fragment {
     public ArrayList<RandomUserModel> randomUserModel = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Context context;
 
-        final String URL = "https://randomuser.me/api/?results=2";
+        final String URL = "https://randomuser.me/api/?results=200";
 
-        Log.v("LOG", "HomeFragment Loaded...");
+        new AsyncRandomUser().execute(URL);
 
-        // mims
-        // LoginViewModel loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = view.findViewById(R.id.id_recycler_view);
+
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
+        //final TextView textView = binding.textHome;
 
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         /*
         homeViewModel.getState().observe(getViewLifecycleOwner(), uiState -> {
             textView.setText("White Woman");
         });
          */
 
-        new AsyncRandomUser().execute(URL);
-
-        return root;
+        return view;
     }
 
-    public class AsyncRandomUser extends AsyncTask<String, Void, String> {
 
+    /**
+     * Inner class
+     * No static keyword
+     * This class has a reference with the outer class MainActivity.
+     */
+    public class AsyncRandomUser extends AsyncTask<String, Void, String> {
         /*
         @Override
         protected void onPreExecute(){}
@@ -103,10 +112,15 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Progress... values){ }
         */
+        public void sanitizeData() {
+            Log.v("LOG", "-> [ sanitizeData() ]");
+        }
 
         @Override
         protected void onPostExecute(String result) { // onPostExecute - runs on the main thread.
             super.onPostExecute(result);
+
+            Log.v("LOG", "result => " + result);
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -139,12 +153,13 @@ public class HomeFragment extends Fragment {
                         }
 
                         bufferedReader.close();
+                        String temp = null;
 
                         // This is being populated from disk.
                         JSONObject jsonObject = new JSONObject(stringBuilder.toString());
                         JSONArray obj = jsonObject.getJSONArray("results");
 
-                        for(int i =  0; i < obj.length(); i++) {
+                        for(int i = 0; i < obj.length(); i++) {
                             randomUserModel.add(new RandomUserModel(
                                     obj.getJSONObject(i).getString("cell"),
                                     obj.getJSONObject(i).getJSONObject("location").getJSONObject("coordinates").getString("latitude"),
@@ -157,7 +172,6 @@ public class HomeFragment extends Fragment {
                                     obj.getJSONObject(i).getJSONObject("id").getString("value"),
                                     obj.getJSONObject(i).getJSONObject("location").getString("city"),
                                     obj.getJSONObject(i).getJSONObject("location").getString("country"),
-                                    obj.getJSONObject(i).getJSONObject("location").getInt("postcode"),
                                     obj.getJSONObject(i).getJSONObject("location").getString("state"),
                                     obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getInt("number"),
                                     obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getString("name"),
@@ -186,30 +200,35 @@ public class HomeFragment extends Fragment {
                     }
 
                     // Handler allows the UI to be updated.
-                    /*
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            RecyclerViewAdapter adapter = new RecyclerViewAdapter(newsModel);
+                            Log.v("LOG", "randomUserModel gender => " + randomUserModel.get(0).getGender());
+
+                            RecyclerViewAdapter adapter = new RecyclerViewAdapter(randomUserModel);
                             recyclerView.setAdapter(adapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
                             adapter.setListener(new RecyclerViewAdapter.Listener() {
                                 @Override
                                 public void onClick(int position) {
-                                    Intent intent = new Intent(getActivity(), ContentActivity.class);
-                                    Log.v("LOG", "[ July 17, 2024 onClick intent in HomeFragment was clicked ] => " + position);
-                                    String url = newsModel.get(position).getUrlToImage();
-                                    String content = newsModel.get(position).getContent();
+                                    Log.v("LOG", "-> setListener() [ " + position + "] ");
 
-                                    intent.putExtra("image", url);
-                                    intent.putExtra("content", content);
+                                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
+
+                                    String image = randomUserModel.get(position).getPicture_large();
+                                    String fname = randomUserModel.get(position).getName_first();
+                                    String lname = randomUserModel.get(position).getName_last();
+
+                                    intent.putExtra("image", image);
+                                    intent.putExtra("content_fname", fname);
+                                    intent.putExtra("content_lname", lname);
+
                                     startActivity(intent);
                                 }
                             });
                         }
                     });
-                    */
                 }
             }).start();
         }

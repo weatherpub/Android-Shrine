@@ -15,7 +15,7 @@ public class RandomUserModel extends ViewModel {
     private final String location_city;
     private final String location_state;
     private final String location_country;
-    private final int location_postcode;
+    // private final int location_postcode;
     private final String coordinates_latitude;
     private final String coordinates_longitude;
     private final String timezone_offset;
@@ -41,7 +41,7 @@ public class RandomUserModel extends ViewModel {
     private final String picture_thumbnail;
     private final String nat;
 
-    public RandomUserModel(String cell, String coordinates_latitude, String coordinates_longitude, int dob_age, String dob_date, String email, String gender, String id_name, String id_value, String location_city, String location_country, int location_postcode, String location_state, int location_street_number, String location_street_name, String login_md5, String login_password, String login_salt, String login_sha1, String login_sha256, String login_username, String login_uuid, String name_first, String name_last, String name_title, String nat, String phone, String picture_large, String picture_medium, String picture_thumbnail, int registered_age, String registered_date, String timezone_description, String timezone_offset) {
+    public RandomUserModel(String cell, String coordinates_latitude, String coordinates_longitude, int dob_age, String dob_date, String email, String gender, String id_name, String id_value, String location_city, String location_country, String location_state, int location_street_number, String location_street_name, String login_md5, String login_password, String login_salt, String login_sha1, String login_sha256, String login_username, String login_uuid, String name_first, String name_last, String name_title, String nat, String phone, String picture_large, String picture_medium, String picture_thumbnail, int registered_age, String registered_date, String timezone_description, String timezone_offset) {
         this.cell = cell;
         this.coordinates_latitude = coordinates_latitude;
         this.coordinates_longitude = coordinates_longitude;
@@ -53,7 +53,7 @@ public class RandomUserModel extends ViewModel {
         this.id_value = id_value;
         this.location_city = location_city;
         this.location_country = location_country;
-        this.location_postcode = location_postcode;
+        // this.location_postcode = location_postcode;
         this.location_state = location_state;
         this.location_street_number = location_street_number;
         this.location_street_name = location_street_name;
@@ -122,9 +122,9 @@ public class RandomUserModel extends ViewModel {
         return location_country;
     }
 
-    public int getLocation_postcode() {
-        return location_postcode;
-    }
+    // public int getLocation_postcode() {
+    //     return location_postcode;
+    // }
 
     public String getLocation_state() {
         return location_state;

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -52,7 +50,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context;
 
-        final String URL = "https://randomuser.me/api/?results=200";
+        final String URL = "https://randomuser.me/api/?results=500";
 
         new AsyncRandomUser().execute(URL);
 
@@ -64,14 +62,13 @@ public class HomeFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        //final TextView textView = binding.textHome;
-
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         /*
-        homeViewModel.getState().observe(getViewLifecycleOwner(), uiState -> {
-            textView.setText("White Woman");
-        });
-         */
+            final TextView textView = binding.textHome;
+            homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+            homeViewModel.getState().observe(getViewLifecycleOwner(), uiState -> {
+                textView.setText("White Woman");
+            });
+        */
 
         return view;
     }
@@ -160,40 +157,42 @@ public class HomeFragment extends Fragment {
                         JSONArray obj = jsonObject.getJSONArray("results");
 
                         for(int i = 0; i < obj.length(); i++) {
-                            randomUserModel.add(new RandomUserModel(
-                                    obj.getJSONObject(i).getString("cell"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("coordinates").getString("latitude"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("coordinates").getString("longitude"),
-                                    obj.getJSONObject(i).getJSONObject("dob").getInt("age"),
-                                    obj.getJSONObject(i).getJSONObject("dob").getString("date"),
-                                    obj.getJSONObject(i).getString("email"),
-                                    obj.getJSONObject(i).getString("gender"),
-                                    obj.getJSONObject(i).getJSONObject("id").getString("name"),
-                                    obj.getJSONObject(i).getJSONObject("id").getString("value"),
-                                    obj.getJSONObject(i).getJSONObject("location").getString("city"),
-                                    obj.getJSONObject(i).getJSONObject("location").getString("country"),
-                                    obj.getJSONObject(i).getJSONObject("location").getString("state"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getInt("number"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getString("name"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("md5"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("password"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("salt"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("sha1"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("sha256"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("username"),
-                                    obj.getJSONObject(i).getJSONObject("login").getString("uuid"),
-                                    obj.getJSONObject(i).getJSONObject("name").getString("first"),
-                                    obj.getJSONObject(i).getJSONObject("name").getString("last"),
-                                    obj.getJSONObject(i).getJSONObject("name").getString("title"),
-                                    obj.getJSONObject(i).getString("nat"),
-                                    obj.getJSONObject(i).getString("phone"),
-                                    obj.getJSONObject(i).getJSONObject("picture").getString("large"),
-                                    obj.getJSONObject(i).getJSONObject("picture").getString("medium"),
-                                    obj.getJSONObject(i).getJSONObject("picture").getString("thumbnail"),
-                                    obj.getJSONObject(i).getJSONObject("registered").getInt("age"),
-                                    obj.getJSONObject(i).getJSONObject("registered").getString("date"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("timezone").getString("description"),
-                                    obj.getJSONObject(i).getJSONObject("location").getJSONObject("timezone").getString("offset")));
+                            if (obj.getJSONObject(i).getString("gender").equals("female")) {
+                                randomUserModel.add(new RandomUserModel(
+                                        obj.getJSONObject(i).getString("cell"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("coordinates").getString("latitude"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("coordinates").getString("longitude"),
+                                        obj.getJSONObject(i).getJSONObject("dob").getInt("age"),
+                                        obj.getJSONObject(i).getJSONObject("dob").getString("date"),
+                                        obj.getJSONObject(i).getString("email"),
+                                        obj.getJSONObject(i).getString("gender"),
+                                        obj.getJSONObject(i).getJSONObject("id").getString("name"),
+                                        obj.getJSONObject(i).getJSONObject("id").getString("value"),
+                                        obj.getJSONObject(i).getJSONObject("location").getString("city"),
+                                        obj.getJSONObject(i).getJSONObject("location").getString("country"),
+                                        obj.getJSONObject(i).getJSONObject("location").getString("state"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getInt("number"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("street").getString("name"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("md5"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("password"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("salt"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("sha1"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("sha256"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("username"),
+                                        obj.getJSONObject(i).getJSONObject("login").getString("uuid"),
+                                        obj.getJSONObject(i).getJSONObject("name").getString("first"),
+                                        obj.getJSONObject(i).getJSONObject("name").getString("last"),
+                                        obj.getJSONObject(i).getJSONObject("name").getString("title"),
+                                        obj.getJSONObject(i).getString("nat"),
+                                        obj.getJSONObject(i).getString("phone"),
+                                        obj.getJSONObject(i).getJSONObject("picture").getString("large"),
+                                        obj.getJSONObject(i).getJSONObject("picture").getString("medium"),
+                                        obj.getJSONObject(i).getJSONObject("picture").getString("thumbnail"),
+                                        obj.getJSONObject(i).getJSONObject("registered").getInt("age"),
+                                        obj.getJSONObject(i).getJSONObject("registered").getString("date"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("timezone").getString("description"),
+                                        obj.getJSONObject(i).getJSONObject("location").getJSONObject("timezone").getString("offset")));
+                            }
                         }
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);

@@ -55,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         RandomUserModel item = randomUserModel.get(position);
 
         String picture = item.getPicture_medium();
-        Picasso.get().load(item.getPicture_large()).resize(600, 0).centerCrop().into(holder.image);
+        Picasso.get().load(item.getPicture_large()).into(holder.image);
 
         holder.name_first.setText(String.format("%s", item.getName_first()));
 
